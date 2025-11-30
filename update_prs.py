@@ -77,6 +77,13 @@ def update_file_variable(file_path, old_value, new_value, dry_run=False):
         content = file_path.read_text(encoding='utf-8')
         original_content = content
 
+        print("--------------------------------")
+        print("content", content)
+        print("old_value", old_value)
+        print("new_value", new_value)
+        print("file_path", file_path)
+        print("--------------------------------")
+
         # Simple replacement - handles most cases
         if old_value in content:
             new_content = content.replace(old_value, new_value)
