@@ -1,6 +1,47 @@
 import os
 import subprocess
 from pathlib import Path
+import json
+import sys
+
+
+def process_branches_batch(branch_names, old_value, new_value):
+    if not (Path('.git').exists()):
+        print("Error: Not in a git repository.")
+        return
+
+    for branch_name in branch_names:
+        print(f"\n{'='*60}")
+        print(f"Processing branch: {branch_name}")
+        print(f"{'='*60}")
+
+ 
+        update_branch_code(branch_name=branch_name, old_value=old_value, new_value=new_value)
+
+        
+        try:
+            print(f"Rebasing '{branch_name}' onto 'main'...")
+            subprocess.run(['git', 'rebase', 'main'], check=True)
+            print(f"Successfully rebased '{branch_name}' onto 'main'.")
+        except subprocess.CalledProcessError as e:
+            print(f"Rebase failed. Resolve conflicts and retry manually. Error: {e}")
+            continue 
+
+
+        try:
+            remote_branch = f"origin/{branch_name}"
+            print(f"Pushing '{branch_name}' to remote '{remote_branch}'...")
+            subprocess.run(['git', 'push', '--force-with-lease', 'origin', branch_name], check=True)
+            print(f"Successfully pushed '{branch_name}' to remote.")
+        except subprocess.CalledProcessError as e:
+            print(f"Push failed: {e}")
+            continue
+
+        try:
+            subprocess.run(['git', 'checkout', 'main'], check=True)
+            print("Switched back to 'main'.")
+        except subprocess.CalledProcessError:
+            print("Warning: Could not switch back to 'main'.")
 
 
 def update_branch_code(branch_name, old_value, new_value):
@@ -14,6 +55,7 @@ def update_branch_code(branch_name, old_value, new_value):
     if not (Path('.git').exists()):
         print("Error: Not in a git repository.")
         return
+        
 
 
     result = subprocess.run(['git', 'show-ref', '--verify', f'refs/heads/{branch_name}'], 
@@ -22,6 +64,13 @@ def update_branch_code(branch_name, old_value, new_value):
         print(f"Error: Branch '{branch_name}' does not exist locally.")
         return
 
+    
+    try:
+        subprocess.run(['git', 'fetch', 'origin', 'main'], check=True)
+        print("Fetched latest 'main' from remote.")
+    except subprocess.CalledProcessError as e:
+        print("Error: Failed to fetch 'main' from remote. Please check your network or remote configuration.")
+        return
 
     merge_base_result = subprocess.run(
         ['git', 'merge-base', 'main', branch_name],
@@ -111,5 +160,13 @@ def update_branch_code(branch_name, old_value, new_value):
         print("Warning: Could not switch back to 'main'.")
 
 
+
 if __name__ == "__main__":
-    update_branch_code(branch_name='feature3', old_value='2.0', new_value='2.9')
+    if len(sys.argv) < 2:
+        print("Branch file not found, use it with python update_prs.py <BRANCHFILE.json>")
+        sys.exit(1)
+    
+    branches_file = sys.argv[1]
+    with open(branches_file, 'r') as f:
+        branches_names = json.load(f)
+    process_branches_batch(branches_names, old_value='2.0', new_value='2.9')
