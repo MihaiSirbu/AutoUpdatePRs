@@ -95,7 +95,7 @@ def update_branch_code(branch_name, old_value, new_value):
     if updated_count > 0:
         try:
             subprocess.run(['git', 'add'] + changed_files, check=True)
-            commit_message = f"Update '{old}' → '{new}' in PR files"
+            commit_message = f"Update '{old_value}' → '{new_value}' in PR files"
             subprocess.run(['git', 'commit', '-m', commit_message], check=True)
             print(f"\n {updated_count} file(s) updated and committed in '{branch_name}'.")
         except subprocess.CalledProcessError as e:
