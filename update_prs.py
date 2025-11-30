@@ -22,12 +22,22 @@ import json
 
 
 def run_git(*args, check=True, dry_run=False):
-    """Run a git command."""
+    """Run a git command with UTF-8 encoding to avoid cp932 decoding errors on Windows."""
     cmd = ['git'] + list(args)
     if dry_run:
         print(f"[DRY RUN] Would run: {' '.join(cmd)}")
         return subprocess.CompletedProcess(cmd, 0, '', '')
-    return subprocess.run(cmd, capture_output=True, text=True, check=check)
+
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        encoding='utf-8',
+        errors='replace',
+        check=check
+    )
+    return result
+
 
 
 def get_repo_root():
