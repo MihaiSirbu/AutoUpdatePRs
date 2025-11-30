@@ -112,4 +112,4 @@ def update_branch_code(branch_name, old_value, new_value):
 
 
 if __name__ == "__main__":
-    update_branch_code(branch_name='feature1', old_value='2.0', new_value='2.9')
+    update_branch_code(branch_name='feature3', old_value='2.0', new_value='2.9')
