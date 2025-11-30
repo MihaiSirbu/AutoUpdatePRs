@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 import json
 import sys
-
+import argparse
 
 def process_branches_batch(branch_names, old_value, new_value):
     if not (Path('.git').exists()):
@@ -162,11 +162,14 @@ def update_branch_code(branch_name, old_value, new_value):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Branch file not found, use it with python update_prs.py <BRANCHFILE.json>")
-        sys.exit(1)
-    
-    branches_file = sys.argv[1]
-    with open(branches_file, 'r') as f:
-        branches_names = json.load(f)
-    process_branches_batch(branches_names, old_value='2.0', new_value='2.9')
+    parser = argparse.ArgumentParser(description="Update files in multiple branches by replacing text.")
+    parser.add_argument("--branches_file",required=True, help="Path to the JSON file containing branch names")
+    parser.add_argument("--old_value", required=True, help="String to replace")
+    parser.add_argument("--new_value", required=True, help="Replacement string")
+
+    args = parser.parse_args()
+
+    with open(args.branches_file, 'r') as f:
+        branch_names = json.load(f)
+
+    process_branches_batch(branch_names=branch_names, old_value=args.old_value, new_value=args.new_value)
