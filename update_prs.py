@@ -3,7 +3,7 @@
 Script to update all open PRs by:
 1. Checkout to target branch
 2. Find common ancestor with main and identify files changed in this branch
-3. Update variables ONLY in changed files (1.2 → 1.3)
+3. Update variables ONLY in changed files (1.2 → 1.4)
 4. Commit changes
 5. Rebase on main
 6. Loop to next target branch
