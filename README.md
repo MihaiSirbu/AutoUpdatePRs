@@ -21,6 +21,13 @@ For each branch :
 
 This in theory will update all open Pull Requests with the latest commit from the code.
 
+## Usage
+
+1. Create a local json file that contains an array of target branches(strings). See `branches.json` as an example.
+2. run `python update_prs.py --branches_file "branches.json" --old_value "<string>oldvalue" --new_value "<string>newvalue"`
+
+
+
 ---
 
 ##  Prerequisites
@@ -31,12 +38,14 @@ This in theory will update all open Pull Requests with the latest commit from th
 
 
 ## Example Output : 
+
 Processing 3 branches...
 
 ==================================================
 Processing branch: feature1
 ==================================================
- Detected base commit (main at PR creation): abc1234
+
+Detected base commit (main at PR creation): abc1234
 Found 2 file(s) changed in the PR:
   - src/utils.py
   - docs/README.md
