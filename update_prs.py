@@ -10,20 +10,19 @@ def update_branch_code(branch_name, old_value, new_value):
     
     This avoids needing to manually provide the base commit hash.
     """
-    # Ensure we're in a git repo
+
     if not (Path('.git').exists()):
         print("Error: Not in a git repository.")
         return
 
-    # Check if branch exists locally
+
     result = subprocess.run(['git', 'show-ref', '--verify', f'refs/heads/{branch_name}'], 
                             capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error: Branch '{branch_name}' does not exist locally.")
         return
 
-    # Step 1: Find the merge base between main and the branch
-    # This gives the common ancestor — the commit where the branch was created from main
+
     merge_base_result = subprocess.run(
         ['git', 'merge-base', 'main', branch_name],
         capture_output=True, text=True
@@ -37,7 +36,7 @@ def update_branch_code(branch_name, old_value, new_value):
     base_commit_hash = merge_base_result.stdout.strip()
     print(f" Detected base commit (main at PR creation): {base_commit_hash}")
 
-    # Step 2: Get list of files changed between that base and the branch
+
     diff_result = subprocess.run(
         ['git', 'diff', '--name-only', f'{base_commit_hash}..{branch_name}'],
         capture_output=True, text=True
@@ -60,7 +59,7 @@ def update_branch_code(branch_name, old_value, new_value):
         print(f"Error: Could not switch to branch '{branch_name}'.")
         return
     updated_count = 0
-    # Step 3: Update the files
+
     for file_path in changed_files:
         file_path = Path(file_path).resolve()
         if not file_path.is_file():
@@ -104,7 +103,7 @@ def update_branch_code(branch_name, old_value, new_value):
         else:
             print("\nNo changes were made. Nothing to commit.")
 
-    # 🔥 ADD THIS BLOCK HERE: Switch back to main
+
     try:
         subprocess.run(['git', 'checkout', 'main'], check=True)
         print("Switched back to 'main'.")
@@ -112,7 +111,5 @@ def update_branch_code(branch_name, old_value, new_value):
         print("Warning: Could not switch back to 'main'.")
 
 
-# Example usage:
 if __name__ == "__main__":
-    # Update branch 'feature1', change '5' to '10'
-    update_branch_code(branch_name='feature1', old_value='1.4', new_value='1.6')
+    update_branch_code(branch_name='feature1', old_value='1.6', new_value='2.0')
