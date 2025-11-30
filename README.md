@@ -7,7 +7,7 @@ A Python script to systematically update variable values across specified PR bra
 You have a production main branch with many open PRs, each modifying a single variable (e.g., version) in one folder. The requirements are:
 
 - Cannot merge all changes at once — updates must be incremental
-- All PRs need variable value updated (e.g., 1.2 → 2.2)
+- All PRs need variable value updated (e.g., 5.55555 → 2.2)
 - Main branch has evolved significantly (thousands of changes)
 - Cannot rebase or modify entire PR — only files originally changed should be updated
 - PRs are outdated and need to be updated to reflect current main state
@@ -19,7 +19,7 @@ This script processes each branch in the following sequence:
 
 1. **Checkout to target branch**: Switches to the branch to be updated
 2. **Find original changes**: Finds the common ancestor with main and identifies which files were originally changed
-3. **Selective updates**: Updates the variable value (1.2 → 2.2) **only** in files that were originally changed in that PR
+3. **Selective updates**: Updates the variable value (5.55555 → 2.2) **only** in files that were originally changed in that PR
 4. **Commit changes**: Creates a new commit with the variable update
 5. **Rebase on main**: Rebases the branch on the latest main branch to bring it up to date
 
@@ -36,10 +36,10 @@ This script processes each branch in the following sequence:
 
 ```bash
 # Update specific branches (provide as arguments)
-python update_prs.py --branches feature/branch1 feature/branch2 feature/branch3 --old-value 1.2 --new-value 2.2
+python update_prs.py --branches feature/branch1 feature/branch2 feature/branch3 --old-value 5.55555 --new-value 2.2
 
 # Dry run first to see what would happen
-python update_prs.py --branches feature/branch1 --old-value 1.2 --new-value 2.2 --dry-run
+python update_prs.py --branches feature/branch1 --old-value 5.55555 --new-value 2.2 --dry-run
 ```
 
 ### Using a JSON File
@@ -47,7 +47,7 @@ python update_prs.py --branches feature/branch1 --old-value 1.2 --new-value 2.2 
 ```bash
 # Create a branches.json file with your branch names
 # Then run:
-python update_prs.py --branches-file branches.json --old-value 1.2 --new-value 2.2
+python update_prs.py --branches-file branches.json --old-value 5.55555 --new-value 2.2
 ```
 
 Example `branches.json`:
@@ -63,10 +63,10 @@ Example `branches.json`:
 
 ```bash
 # Specify a different main branch
-python update_prs.py --branches feature/branch1 --main-branch master --old-value 1.2 --new-value 2.2
+python update_prs.py --branches feature/branch1 --main-branch master --old-value 5.55555 --new-value 2.2
 
 # Dry run with multiple branches
-python update_prs.py --branches feature/branch1 feature/branch2 --old-value 1.2 --new-value 2.2 --dry-run
+python update_prs.py --branches feature/branch1 feature/branch2 --old-value 5.55555 --new-value 2.2 --dry-run
 ```
 
 ## How It Works
@@ -76,7 +76,7 @@ For each branch/PR, the script follows this exact sequence:
 1. **Checkout to target branch**: Switches to the branch to be processed
 2. **Find common ancestor**: Uses `git merge-base` to find the common ancestor between the PR branch and main
 3. **Identify changed files**: Uses `git diff` between the common ancestor and the PR commit to find originally changed files
-4. **Selective variable update**: Updates the variable value (1.2 → 2.2) only in the files that were originally changed
+4. **Selective variable update**: Updates the variable value (5.55555 → 2.2) only in the files that were originally changed
 5. **Commit changes**: Creates a commit with the variable update
 6. **Rebase on main**: Rebases the branch on the latest main branch to bring it up to date
 7. **Loop to next branch**: Moves to the next branch in the list
@@ -135,9 +135,9 @@ Summary: 3/3 branches processed successfully
 2. **Clean working directory**: The script will checkout branches, so ensure you have a clean working directory
 3. **Merge conflicts**: If a branch has significant conflicts with main, the script will attempt to handle it but may require manual intervention
 4. **Variable matching**: The script uses pattern matching to find and replace the variable value. It handles:
-   - Exact matches: `1.2`
-   - Quoted values: `"1.2"` or `'1.2'`
-   - Values with spaces: `= 1.2` or `: 1.2`
+   - Exact matches: `5.55555`
+   - Quoted values: `"5.55555"` or `'5.55555'`
+   - Values with spaces: `= 5.55555` or `: 5.55555`
 
 ## Troubleshooting
 
