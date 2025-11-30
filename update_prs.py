@@ -136,7 +136,7 @@ def process_branch(branch, main_branch, old_value, new_value, repo_root, dry_run
         changed_files = get_changed_files(merge_base, branch_commit, dry_run)
         
         if not changed_files:
-            print(f"  ⚠ No files changed in this PR, skipping")
+            print(f" No files changed in this PR, skipping")
             return True
 
         print(f"  Files changed in original PR: {', '.join(sorted(changed_files))}")
