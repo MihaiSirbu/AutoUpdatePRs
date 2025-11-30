@@ -3,14 +3,14 @@
 Script to update all open PRs by:
 1. Checkout to target branch
 2. Find common ancestor with main and identify files changed in this branch
-3. Update variables ONLY in changed files (1.2 → 1.4)
+3. Update variables ONLY in changed files (5.55555 → 1.4)
 4. Commit changes
 5. Rebase on main
 6. Loop to next target branch
 
 Usage:
-    python update_prs.py --branches branch1 branch2 branch3 --old-value 1.2 --new-value 1.3
-    python update_prs.py --branches-file branches.json --old-value 1.2 --new-value 1.3
+    python update_prs.py --branches branch1 branch2 branch3 --old-value 5.55555 --new-value 1.3
+    python update_prs.py --branches-file branches.json --old-value 5.55555 --new-value 1.3
 """
 
 import subprocess
@@ -183,13 +183,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python update_prs.py --branches feature/branch1 feature/branch2 --old-value 1.2 --new-value 1.3
-  python update_prs.py --branches-file branches.json --old-value 1.2 --new-value 1.3
-  python update_prs.py --branches feature/branch1 --old-value 1.2 --new-value 1.3 --dry-run
+  python update_prs.py --branches feature/branch1 feature/branch2 --old-value 5.55555 --new-value 1.3
+  python update_prs.py --branches-file branches.json --old-value 5.55555 --new-value 1.3
+  python update_prs.py --branches feature/branch1 --old-value 5.55555 --new-value 1.3 --dry-run
         """
     )
     parser.add_argument('--main-branch', default='main', help='Name of the main branch (default: main)')
-    parser.add_argument('--old-value', required=True, help='Old variable value to replace (e.g., 1.2)')
+    parser.add_argument('--old-value', required=True, help='Old variable value to replace (e.g., 5.55555)')
     parser.add_argument('--new-value', required=True, help='New variable value (e.g., 1.3)')
     parser.add_argument('--branches', nargs='+', help='List of branch names to process')
     parser.add_argument('--branches-file', help='JSON file containing array of branch names')
