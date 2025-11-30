@@ -38,7 +38,7 @@ This in theory will update all open Pull Requests with the latest commit from th
 
 
 ## Example Output : 
-
+```
 Processing 3 branches...
 
 ==================================================
@@ -60,3 +60,4 @@ Switched back to 'main'.
 
 Completed: feature1
 ---
+```
